@@ -8,6 +8,7 @@ using SymmetricTensors
 data = reshape(collect(1.:15.),(5,3))
 m = moment(data, 3)
 Array(m)
+println(m[1,2,3])
 c = cumulants(data, 3)
 Array(c[2])
 d = c[2]
@@ -25,18 +26,9 @@ function calcMoment(data, m)
         mult = 1
         j = 1
         while j <= long2
-            long3 = length(e[i][j]) 
-            c = cumulants(data, long3)
-            d = Array(c[long3])
-            if long3 == 4
-                mult *= d[1, 2, 3, 4]
-            elseif long3 == 3
-                mult *= d[e[i][j][1], e[i][j][2], e[i][j][3]]
-            elseif long3 == 2
-                mult *= d[e[i][j][1], e[i][j][2]]
-            else
-                mult *= d[e[i][j][1]]
-            end
+            l3 = length(e[i][j]) 
+            c = Array(cumulants(data, l3))
+            mult *= c[l3][e[i][j]...]
             j = j + 1
         end
         sum += mult
