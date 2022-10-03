@@ -37,4 +37,4 @@ function calcMoment(data, m)
     println(sum)
 end
 
-calcMoment(data, 3)
+calcMoment(data, 2)
