@@ -20,7 +20,7 @@ sigmaCom = sigma1^2 + sigma2^2
 d = Normal(mu1, sigma1)
 e = Normal(mu2, sigma2)
 g = Normal(muAdd, sigmaCom)
-x = rand(d, 10000)
+x = rand(d, 10000000)
 
 #Store Moments to condense data
 function storeMoments(data)
@@ -30,13 +30,23 @@ end
 #histogram(x)
 
 f2 = @.sin(x)
-plot!(f2)
+plot(f2)
 
 arr = storeMoments(x)
 h = Normal(arr[1], arr[2])
-y = rand(h, 10000)
-f3 = @.sin(y)
-plot!(f3)
+E = expectation(h)
+println(E(y -> @.sin(y)))
+
+function trueExp(data) 
+    sum = 0
+    for x in data 
+        sum += @.sin(x)
+    end
+    sum = sum / length(data)
+    return sum
+end
+println(trueExp(x))
+
 
 #xs = range(0, 10, length = 10)
 #ys = @.exp(-xs)
