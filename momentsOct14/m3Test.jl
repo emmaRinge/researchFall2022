@@ -87,8 +87,8 @@ function findZ(std)
     sigma2 = rand(0.1:std)
     d = Normal(mu1, sigma1)
     e = Normal(mu2, sigma2)
-    x = rand(d, 10)
-    y = rand(e, 10)
+    x = rand(d, 1000)
+    y = rand(e, 1000)
     z = x .* y
     return z
 end
@@ -96,12 +96,16 @@ end
 function approxZ2(z)
     xlin = range(findmin(z)[1], findmax(z)[1], length = 10)
     ys = convert(AbstractVector, @.sin(z))
-    return f = Polynomials.fit(z, ys, 3)
+    x = range(0, 10, length = 10)
+    y = convert(AbstractVector, @.sin(x))
+    return f = Polynomials.fit(x, y, 3)
 end
 function approxZ3(z)
     xlin = range(findmin(z)[1], findmax(z)[1], length = 10)
     ys = convert(AbstractVector, @.sin(z))
-    return f2 = Polynomials.fit(z, ys, 6)
+    x = range(0, 10, length = 10)
+    y = convert(AbstractVector, @.sin(x))
+    return f2 = Polynomials.fit(x, y, 6)
 end
 
 function trialZ(num, std)
@@ -109,7 +113,7 @@ function trialZ(num, std)
     b = 0
     c = 0
     x = 1
-    data1 = Matrix(undef, num, 3) 
+    data1 = Matrix(undef, num, 4) 
     while x <= num
             z = findZ(std)
             f = approxZ2(z)
@@ -117,13 +121,13 @@ function trialZ(num, std)
             arr = storeMoments(z)
             cm = calcCumulants(arr)
             mom = calcPseudomoments(cm)
-            approxZ(findZ(std))
             a = trueExp(z)
             b = polyExp(f, arr)
             c = polyExpEx(f2, mom)
-            data1[x, 1] = a
-            data1[x, 2] = b
-            data1[x, 3] = c
+            data1[x, 1] = stats.std(z)
+            data1[x, 2] = a
+            data1[x, 3] = b
+            data1[x, 4] = c
             a = 0
             b = 0
             c = 0
