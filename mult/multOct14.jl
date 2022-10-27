@@ -48,23 +48,24 @@ mB = rand(0.1:1)
 sB = rand(0.1:3)
 k = Normal(mA, sA)
 l = Normal(mB, sB)
-v = rand(k, 10)
-w = rand(l, 10)
+v = rand(k, 5)
+w = rand(l, 5)
 z = v .* w
 
 mC = rand(0.1:1)
 sC = rand(0.1:1)
 
 n = Normal(mC, sC)
-n2 = rand(n, 10)
-data2 = Matrix(undef, 10, 10)
+n2 = rand(n, 5)
+data2 = Array{Float64}(undef, 5, 5)
 
 for p in 1:size(data2, 1)
     for q in 1:size(data2, 1)
         data2[p, q] = (z[q] .* n2[p])
     end
 end
-print(data2)
+
+moment(Matrix(data2), 3)
 
 
 
