@@ -10,10 +10,28 @@ using Plots
 using Combinatorics
 using SymmetricTensors
 using Polynomials
+using DynamicPolynomials
 
 function storeMoments(data)
+    println([moment(data, 1), moment(data,2), moment(data, 3)])
     return [moment(data, 1), moment(data,2), moment(data, 3)]
 end
+
+function test()
+    x = findSupport(3)
+    y = findSupport(2)
+    index = 1
+    A = Array{Float64}(undef, length(x), 25)
+    for r in length(y)
+        for p in length(x)
+            A[index] = x[p] .* y[r]
+            index += 1
+        end
+    end
+    println(moment(A, 2))
+end
+
+#test()
 
 function calcCumulants(arr)
     moms2cums!(m)
@@ -42,27 +60,46 @@ end
 
 function calcZ(x, y) 
     z = zeros(length(x), 1)
-    for q in 1:length(x)
+    for q in length(x)
         z[q] = @.sin(x[q]) .* @.cos(y[q])
     end
     return z
 end
 
-function createMonomial(a, b)
+function calcGen() 
+    x = range(0, 10, length = 10)
+    y = range(0, 10, length = 10)
+    z = zeros(length(x), 1)
+    for eachindex in x
+        z[q] = @.sin(x[q]) .* @.cos(y[q])
+    end
+    return z
+end
+
+function createMonomial2Order(a, b)
     @polyvar x y 
-    X = monomials([x, y], 0:8)
     X1 = monomials([x, y], 0:4)
-    X2 = [X1[15], X1[14], X1[13], X1[12], X1[11], X1[10], X1[9], X1[8], X1[7], X1[6], X1[5], X1[4], X1[3], X1[2], X1[1], X[29], X[28], X[27], X[26], X[22], X[21], X[20], X[13], X[14], X[5]]
     p = subs(X2, x => a, y=> b)
     return p
 end
 
+function createMonomial3Order(a, b)
+    @polyvar x y 
+    X1 = monomials([x, y], 0:3)
+    p = subs(X2, x => a, y=> b)
+    return p
+end
+
+@polyvar x y 
+X1 = monomials([x, y], 0:4)
+println(X1)
+
 function createA(xVect, yVect)
     A = Array{Float64}(undef, length(xVect), 25)
     index = 1
-    for q in 1:length(xVect)
+    for q in length(x)
         h = createMonomial(xVect[q], yVect[q])
-        for r in 1:length(h)
+        for r in length(h)
             temp = convert(Float64, h[r])
             A[index] = temp
             index += 1
@@ -72,7 +109,7 @@ function createA(xVect, yVect)
 end
 
 function leastSquaresReg(A, z)
-    b = A .\ z
+    b = A\z
     return b
 end
 
