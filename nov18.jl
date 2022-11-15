@@ -27,7 +27,16 @@ end
 #FIX
 function calcPseudomoms(data, samples)
     m4 = moment(zeros(samples,samples), 4)
-    
+    m = [moment(data, 1), moment(data,2), moment(data, 3), moment(data, 4)]
+    m4 = [[0 0; 0 0;;; 0 0; 0 0;;;; 0 0; 0 0;;; 0 0; 0 0];;;;]
+    moms2cums!(m)
+    m3 = [m[1], m[2], m[3], m4]
+    cums2moms(m)
+end
+
+#FIX
+function calcPseudomoms(data, samples)
+    m4 = moment(zeros(samples,samples), 4)
     m = [moment(data, 1), moment(data,2), moment(data, 3), moment(data, 4)]
     m4 = [[0 0; 0 0;;; 0 0; 0 0;;;; 0 0; 0 0;;; 0 0; 0 0];;;;]
     moms2cums!(m)
@@ -52,15 +61,29 @@ end
 #see which one is the right way of calculating
 function trueExp(x, y)
     z = zeros(length(x), 1)
-    for q in length(x)
+    sum = 0
+    for q in (1:length(x))
         z[q] = @.sin(x[q]) .* @.cos(y[q])
+        sum += @.sin(x[q]) .* @.cos(y[q])
     end
+    println(sum/length(x))
     return z
 end
 
+#=function trueExpect(xs, ys)
+    sum = 0
+    for a in xs, b in ys 
+        sum += @.sin(a) .* @.cos(b)
+    end
+    sum /= length(xs)
+end =#
+
 function trueExpect(xs, ys)
-    f(x, y) = sin(x) * cos(y)
-    return(exp(f.(xs,ys)))
+    sum = 0
+    for a in (1:length(xs))
+        sum += @.sin(xs[a]) .* @.cos(ys[a])
+    end
+    sum /= length(xs)
 end
 
 #x and y from min to max with l data point for sin(x) * cos(y) ex. 0, 5, 5
@@ -143,13 +166,16 @@ function main(std, min, max, samples, order)
     c = calcCumulants(m)
     p = calcPseudomoms(z2, samples)
     z = trueExp(x, y)
+    z1 = trueExpect(x, y)
 
     #calculate approximations
     b = calcGen(min, max, samples, order)
 
     arr = getMomentsVector(p)
     
+    #println(z2)
     println(z)
+    println(z1)
     return dot(b, arr)
     
 end
