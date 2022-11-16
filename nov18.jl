@@ -54,6 +54,7 @@ function calcAnyPseudomom(data, order)
         push!(m, moment(data, i+2))
     end
     push!(m, c)
+    #println(cums2moms(m))
     return cums2moms(m)
 end
 
@@ -105,17 +106,19 @@ function calcGen(min, max, l, c)
     y = range(min, max, length = l)
     z = calcGenSupport(x, y, l)
     A = calcGenA(x, y, c)
+    println(A)
     return leastSquaresReg(A, z)
 end
 
 function calcGenSupport(x, y, l) 
     z = zeros(l, 1)
-    for q in (1:length(l))
-        z[q] = @.sin(x[q]) .* @.cos(y[q])
+    for q in (1:length(x))
+        z[q] = @.sin(x[q]) * @.cos(y[q])
     end
     return z
 end
 
+#CHECK THIS FUNCTION
 function calcGenA(xVect, yVect, c)
     A = Array{Float64}(undef, length(xVect), binomial(c+2, c))
     index = 1
@@ -187,10 +190,10 @@ function main(std, min, max, samples, order)
     arr = getMomentsVector(p)
     
     #println(z2)
-    println(z)
+    #println(z)
     println("b")
     println(b)
-    println(arr)
+    #println(arr)
     return dot(b, arr)
     
 end
