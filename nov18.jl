@@ -34,14 +34,27 @@ function calcPseudomoms(data, samples)
     cums2moms(m)
 end
 
-#FIX
-function calcPseudomoms(data, samples)
-    m4 = moment(zeros(samples,samples), 4)
-    m = [moment(data, 1), moment(data,2), moment(data, 3), moment(data, 4)]
-    m4 = [[0 0; 0 0;;; 0 0; 0 0;;;; 0 0; 0 0;;; 0 0; 0 0];;;;]
-    moms2cums!(m)
-    m3 = [m[1], m[2], m[3], m4]
-    cums2moms(m)
+#Look at cums2moms
+function calcPseudomom(data, samples)
+    c4 = SymmetricTensor(zeros(Float64, (2, 2, 2, 2)))
+    m3 = [moment(data, 1), moment(data,2), moment(data, 3), c4]
+    println(cums2moms(m3))
+end
+
+#Calculates pseudoemoments up to param order from stored moments order-1
+function calcAnyPseudomom(data, order)
+    dim = ones(Int8, 1, order)
+    for i in (1:order)
+        dim[i] *= 2
+    end
+    Tuple(dim)
+    c = SymmetricTensor(zeros(Float64, Tuple(dim)))
+    m = [moment(data,1), moment(data,2)]
+    for i in (1:(order-3))
+        push!(m, moment(data, i+2))
+    end
+    push!(m, c)
+    return cums2moms(m)
 end
 
 #find the random variables for the distribution and calculate the true expectation
@@ -97,7 +110,7 @@ end
 
 function calcGenSupport(x, y, l) 
     z = zeros(l, 1)
-    for q in (1:l)
+    for q in (1:length(l))
         z[q] = @.sin(x[q]) .* @.cos(y[q])
     end
     return z
@@ -164,7 +177,7 @@ function main(std, min, max, samples, order)
     #calc moments, cumulants, pseudoemoments, and expectation
     m = storeMoments(z2)
     c = calcCumulants(m)
-    p = calcPseudomoms(z2, samples)
+    p = calcAnyPseudomom(z2, order)
     z = trueExp(x, y)
     z1 = trueExpect(x, y)
 
@@ -175,10 +188,12 @@ function main(std, min, max, samples, order)
     
     #println(z2)
     println(z)
-    println(z1)
+    println("b")
+    println(b)
+    println(arr)
     return dot(b, arr)
     
 end
 
 #actually calling the function
-main(3, 0, 5, 5, 4)
+main(3, 0, 20, 5, 4)
