@@ -76,11 +76,11 @@ function calcPseudomoments(arr)
     m2 = arr[2] + (arr[1]^2)
     m3 = arr[3] + (3 * arr[2] * arr[1]) + 2(arr[1])^3
     m4 = (4 * arr[3] * arr[1]) + 3(arr[2])^2 + (6 * arr[2] * (arr[1])^2) + (arr[1])^4
-    m5 = (10 * arr[3] * arr[2]) + (10 * arr[3] * (arr[1])^2) + (15 * ((arr[2])^2) * arr[1])
-            + (10 * arr[2] * (arr[1])^3) + (arr[1])^5
-    m6 = (10(arr[3]^2)) + (60 * arr[3] * arr[2] * arr[1]) + (20 * arr[3] * (arr[1])^3)
+    m5 = ((10 * arr[3] * arr[2]) + (10 * arr[3] * (arr[1])^2) + (15 * ((arr[2])^2) * arr[1])
+            + (10 * arr[2] * (arr[1])^3) + (arr[1])^5)
+    m6 = ((10(arr[3]^2)) + (60 * arr[3] * arr[2] * arr[1]) + (20 * arr[3] * (arr[1])^3)
             + (15 * (arr[2])^3) + (45 * (arr[2])^2 * (arr[1])^2) + (15 * arr[2] * (arr[1])^4)
-            + (arr[1])^6
+            + (arr[1])^6)
     return [m1, m2, m3, m4, m5, m6]
 end
 
@@ -97,8 +97,8 @@ end
 
 #approx with pseudomoments
 function approxWPseudomoments(arr)
-    approx = sin(arr[1]) - ((sin(arr[1])/2)*arr[2]) - ((cos(arr[1])/6)*arr[3]) + ((sin(arr[1])/24)*arr[4])
-        + ((cos(arr[1])/120)*arr[5]) - ((sin(arr[1])/720)*arr[6])
+    approx = (sin(arr[1]) - ((sin(arr[1])/2)*arr[2]) - ((cos(arr[1])/6)*arr[3]) + ((sin(arr[1])/24)*arr[4])
+        + ((cos(arr[1])/120)*arr[5]) - ((sin(arr[1])/720)*arr[6]))
     return approx
 end
 
