@@ -23,6 +23,8 @@ function calcAnyPseudomom(data, order, stored)
     for i in (1:(stored-2))
         push!(m, moment(data, i+2))
     end
+        
+    moms2cums!(m)
 
     for j in (1:(order - stored))
         dim = ones(Int8, 1, stored + (j))
